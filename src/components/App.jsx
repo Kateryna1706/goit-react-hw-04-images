@@ -2,8 +2,9 @@ import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
-
-const API_KEY = '36259505-7f3dd5b7540e269f4a04dc70a';
+import { fetchImages } from './Services/api';
+import { Button } from './Button/Button';
+import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
@@ -11,12 +12,32 @@ export class App extends Component {
     value: '',
     images: [],
     loading: false,
+    modal: { isOpen: false, visibleData: null },
+    error: null,
   };
 
   changeValue = value => {
-    console.log(value);
     this.setState({
       value,
+    });
+  };
+
+  handleClick = () => {
+    let currentPage = this.state.page;
+    this.setState({
+      page: (currentPage += 1),
+    });
+  };
+
+  handleClickGallery = (id, image) => {
+    this.setState({
+      modal: {
+        isOpen: true,
+        visibleData: {
+          id,
+          image,
+        },
+      },
     });
   };
 
@@ -28,25 +49,49 @@ export class App extends Component {
     // });
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (this.state.value !== prevState.value) {
-      this.setState({
-        loading: true,
-      });
-      setTimeout(() => {
-        fetch(
-          `https://pixabay.com/api/?q=${this.state.value}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-        )
-          .then(response => response.json())
-          .then(response =>
-            this.setState({
-              images: [...response.hits],
-              loading: false,
-            })
-          );
-      }, 2000);
+      try {
+        this.setState({
+          loading: true,
+          page: 1,
+        });
+        const images = await fetchImages(this.state.value, this.state.page);
+        this.setState({
+          images: [...images.data.hits],
+        });
+      } catch (error) {
+        console.log(error);
+        this.setState({
+          error: error.message,
+        });
+      } finally {
+        this.setState({
+          loading: false,
+        });
+      }
 
       // localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+    if (this.state.page !== prevState.page) {
+      try {
+        this.setState({
+          loading: true,
+        });
+        const moreImages = await fetchImages(this.state.value, this.state.page);
+        this.setState(({ images }) => ({
+          images: [...images, ...moreImages.data.hits],
+        }));
+      } catch (error) {
+        console.log(error);
+        this.setState({
+          error: error.message,
+        });
+      } finally {
+        this.setState({
+          loading: false,
+        });
+      }
     }
   }
 
@@ -56,28 +101,28 @@ export class App extends Component {
     return (
       <div
         style={{
-          // display: 'flex',
-          // justifyContent: 'center',
-          // flexDirection: 'column',
-          // alignItems: 'flex-start',
-
+          textAlign: 'center',
           height: '100vh',
-          // display: 'grid',
-          // gridTemplateColumns: 1,
-          // gridGap: 16,
           paddingBottom: 24,
           padding: 20,
           fontSize: 30,
           color: '#010101',
         }}
       >
+        {this.state.modal.isOpen && (
+          <Modal largeImage={this.state.modal.visibleData} />
+        )}
         <Searchbar onSubmit={this.changeValue} />
         {this.state.loading && <p>Loading...</p>}
         {this.state.images.length > 0 && (
           <ImageGallery>
-            <ImageGalleryItem images={this.state.images} />
+            <ImageGalleryItem
+              images={this.state.images}
+              onClick={this.handleClickGallery}
+            />
           </ImageGallery>
         )}
+        {this.state.images.length > 0 && <Button onClick={this.handleClick} />}
       </div>
     );
   }

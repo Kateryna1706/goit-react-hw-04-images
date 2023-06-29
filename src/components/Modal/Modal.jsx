@@ -1,16 +1,19 @@
 import css from './Modal.module.css';
 import PropTypes from 'prop-types';
 
-export const Modal = () => {
+export const Modal = ({ largeImage }) => {
   return (
-    <div className={css.overlay}>
-      <div className={css.modal}>
-        <img src="" alt="" />
+    <div className={css.Overlay}>
+      <div className={css.Modal}>
+        <img src={largeImage.image} alt="" key={largeImage.id} />
       </div>
     </div>
   );
 };
 
 Modal.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  largeImage: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    image: PropTypes.string.isRequired,
+  }).isRequired,
 };
