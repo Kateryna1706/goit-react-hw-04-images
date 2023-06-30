@@ -5,6 +5,7 @@ import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { fetchImages } from './Services/api';
 import { Button } from './Button/Button';
 import { Modal } from './Modal/Modal';
+import { MagnifyingGlass } from 'react-loader-spinner';
 
 export class App extends Component {
   state = {
@@ -109,7 +110,18 @@ export class App extends Component {
           />
         )}
         <Searchbar onSubmit={this.changeValue} />
-        {this.state.loading && <p>Loading...</p>}
+        {this.state.loading && (
+          <MagnifyingGlass
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="MagnifyingGlass-loading"
+            wrapperStyle={{}}
+            wrapperClass="MagnifyingGlass-wrapper"
+            glassColor="#c0efff"
+            color="#e15b64"
+          />
+        )}
         {this.state.images.length > 0 && (
           <ImageGallery>
             <ImageGalleryItem
