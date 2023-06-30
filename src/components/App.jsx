@@ -12,47 +12,13 @@ export class App extends Component {
     value: '',
     images: [],
     loading: false,
-    modal: { isOpen: false, visibleData: null },
+    // modal: { isOpen: false, visibleData: null },
     error: null,
   };
 
-  changeValue = value => {
-    this.setState({
-      value,
-    });
-  };
-
-  handleClick = () => {
-    let currentPage = this.state.page;
-    this.setState({
-      page: (currentPage += 1),
-    });
-  };
-
-  handleClickGallery = (id, image) => {
-    this.setState(state => ({
-      modal: {
-        isOpen: true,
-        visibleData: { id, image },
-      },
-    }));
-  };
-
-  closeModal = () => {
-    this.setState({
-      modal: {
-        isOpen: false,
-      },
-    });
-  };
-
-  componentDidMount() {
-    // const contacts = localStorage.getItem('contacts');
-    // const parsedContacts = JSON.parse(contacts);
-    // this.setState({
-    //   contacts: parsedContacts,
-    // });
-  }
+  // componentDidMount() {
+  //   window.addEventListener('keydown', this.handleKeyDown);
+  // }
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.state.value !== prevState.value) {
@@ -100,7 +66,50 @@ export class App extends Component {
     }
   }
 
-  componentWillUnmount() {}
+  // componentWillUnmount() {
+  //   window.removeEventListener('keydown', this.handleKeyDown);
+  // }
+
+  changeValue = value => {
+    this.setState({
+      value,
+    });
+  };
+
+  // handleKeyDown = event => {
+  //   if (event.code === 'Escape') {
+  //     console.log('KeyDown')
+  //     this.setState({
+  //       modal: {
+  //         isOpen: false,
+  //       },
+  //     });
+  //   }
+  // };
+
+  showMore = () => {
+    let currentPage = this.state.page;
+    this.setState({
+      page: (currentPage += 1),
+    });
+  };
+
+  // handleClickGallery = (id, image) => {
+  //   this.setState(state => ({
+  //     modal: {
+  //       isOpen: true,
+  //       visibleData: { id, image },
+  //     },
+  //   }));
+  // };
+
+  // closeModal = () => {
+  //   this.setState({
+  //     modal: {
+  //       isOpen: false,
+  //     },
+  //   });
+  // };
 
   render() {
     return (
@@ -130,7 +139,7 @@ export class App extends Component {
             />
           </ImageGallery>
         )}
-        {this.state.images.length > 0 && <Button onClick={this.handleClick} />}
+        {this.state.images.length > 0 && <Button onClick={this.showMore} />}
       </div>
     );
   }
