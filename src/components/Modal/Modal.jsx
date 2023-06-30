@@ -3,9 +3,6 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export class Modal extends Component {
-  state = {
-    modal: { isOpen: false, visibleData: null },
-  };
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
@@ -14,24 +11,24 @@ export class Modal extends Component {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  
-  
-
   handleKeyDown = event => {
     if (event.code === 'Escape') {
       console.log('KeyDown');
-      this.setState({
-        modal: {
-          isOpen: false,
-        },
-      });
+      this.props.onClick();
+    }
+  };
+
+  handleBackdropClick = event => {
+    if (event.currentTarget === event.target) {
+      console.log('Backdrop');
+      this.props.onClick();
     }
   };
 
   render() {
     return (
-      <div className={css.Overlay}>
-        <div className={css.Modal} onClick={this.props.onClick}>
+      <div className={css.Overlay} onClick={this.handleBackdropClick}>
+        <div className={css.Modal}>
           <img
             src={this.props.largeImage.image}
             alt=""

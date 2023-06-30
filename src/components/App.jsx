@@ -12,13 +12,9 @@ export class App extends Component {
     value: '',
     images: [],
     loading: false,
-    // modal: { isOpen: false, visibleData: null },
+    modal: { isOpen: false, visibleData: null },
     error: null,
   };
-
-  // componentDidMount() {
-  //   window.addEventListener('keydown', this.handleKeyDown);
-  // }
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.state.value !== prevState.value) {
@@ -41,8 +37,6 @@ export class App extends Component {
           loading: false,
         });
       }
-
-      // localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     }
     if (this.state.page !== prevState.page) {
       try {
@@ -66,26 +60,11 @@ export class App extends Component {
     }
   }
 
-  // componentWillUnmount() {
-  //   window.removeEventListener('keydown', this.handleKeyDown);
-  // }
-
   changeValue = value => {
     this.setState({
       value,
     });
   };
-
-  // handleKeyDown = event => {
-  //   if (event.code === 'Escape') {
-  //     console.log('KeyDown')
-  //     this.setState({
-  //       modal: {
-  //         isOpen: false,
-  //       },
-  //     });
-  //   }
-  // };
 
   showMore = () => {
     let currentPage = this.state.page;
@@ -94,22 +73,22 @@ export class App extends Component {
     });
   };
 
-  // handleClickGallery = (id, image) => {
-  //   this.setState(state => ({
-  //     modal: {
-  //       isOpen: true,
-  //       visibleData: { id, image },
-  //     },
-  //   }));
-  // };
+  handleClickGallery = (id, image) => {
+    this.setState(state => ({
+      modal: {
+        isOpen: true,
+        visibleData: { id, image },
+      },
+    }));
+  };
 
-  // closeModal = () => {
-  //   this.setState({
-  //     modal: {
-  //       isOpen: false,
-  //     },
-  //   });
-  // };
+  closeModal = () => {
+    this.setState({
+      modal: {
+        isOpen: false,
+      },
+    });
+  };
 
   render() {
     return (
