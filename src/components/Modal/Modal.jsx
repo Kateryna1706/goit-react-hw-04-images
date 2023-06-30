@@ -33,7 +33,7 @@ export class Modal extends Component {
             src={this.props.largeImage.image}
             alt=""
             className={css.ModalImage}
-            key={this.props.largeImage.id}
+            
           />
         </div>
       </div>

@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import css from './Searchbar.module.css';
 import PropTypes from 'prop-types';
+import { IconButton } from '../IconButton/IconButton';
+import { ReactComponent as Search } from '../Icons/Icons.svg';
 
 export class Searchbar extends Component {
   state = {
@@ -32,9 +34,9 @@ export class Searchbar extends Component {
     return (
       <header className={css.Searchbar}>
         <form className={css.SearchForm} onSubmit={this.handleSubmit}>
-          <button type="submit" className={css.SearchFormButton}>
-            <span className={css.buttonLabel}>Search</span>
-          </button>
+          <IconButton onClick={this.handleSubmit}>
+            <Search width="35" height="35" />
+          </IconButton>
 
           <input
             className={css.SearchFormInput}
