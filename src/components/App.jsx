@@ -30,13 +30,18 @@ export class App extends Component {
   };
 
   handleClickGallery = (id, image) => {
-    this.setState({
+    this.setState(state => ({
       modal: {
         isOpen: true,
-        visibleData: {
-          id,
-          image,
-        },
+        visibleData: { id, image },
+      },
+    }));
+  };
+
+  closeModal = () => {
+    this.setState({
+      modal: {
+        isOpen: false,
       },
     });
   };
@@ -110,7 +115,10 @@ export class App extends Component {
         }}
       >
         {this.state.modal.isOpen && (
-          <Modal largeImage={this.state.modal.visibleData} />
+          <Modal
+            largeImage={this.state.modal.visibleData}
+            onClick={this.closeModal}
+          />
         )}
         <Searchbar onSubmit={this.changeValue} />
         {this.state.loading && <p>Loading...</p>}

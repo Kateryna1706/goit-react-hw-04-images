@@ -5,7 +5,11 @@ export const ImageGalleryItem = ({ images, onClick }) => {
   return (
     <div className={css.ImageGallery}>
       {images.map(image => (
-        <li className={css.imageGalleryItem} key={image.id} onClick={() => onClick(image.id, image.largeImageURL)}>
+        <li
+          className={css.imageGalleryItem}
+          key={image.id}
+          onClick={() => onClick(image.id, image.largeImageURL)}
+        >
           <img
             src={image.webformatURL}
             alt={image.tags}
@@ -25,4 +29,5 @@ ImageGalleryItem.propTypes = {
       largeImageURL: PropTypes.string.isRequired,
     })
   ).isRequired,
+  onClick: PropTypes.func.isRequired,
 };
