@@ -24,7 +24,7 @@ export class Searchbar extends Component {
       return alert('Enter value');
     }
 
-    this.props.onSubmit(value, this.reset);
+    this.props.onSubmit(value);
 
     this.reset();
   };
