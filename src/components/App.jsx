@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
+
 import { fetchImages } from './Services/api';
 import { Button } from './Button/Button';
 import { Modal } from './Modal/Modal';
@@ -18,35 +18,18 @@ export class App extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    if (this.state.value !== prevState.value) {
-      try {
-        this.setState({
-          loading: true,
-          page: 1,
-        });
-        const images = await fetchImages(this.state.value, this.state.page);
-        this.setState({
-          images: [...images.data.hits],
-        });
-      } catch (error) {
-        console.log(error);
-        this.setState({
-          error: error.message,
-        });
-      } finally {
-        this.setState({
-          loading: false,
-        });
-      }
-    }
-    if (this.state.page !== prevState.page) {
+    if (
+      this.state.value !== prevState.value ||
+      this.state.page !== prevState.page
+    ) {
       try {
         this.setState({
           loading: true,
         });
-        const moreImages = await fetchImages(this.state.value, this.state.page);
-        this.setState(({ images }) => ({
-          images: [...images, ...moreImages.data.hits],
+        const response = await fetchImages(this.state.value, this.state.page);
+        this.setState(prevState => ({
+          images: [...prevState.images, ...response.data.hits],
+          loadMore: this.state.page < Math.ceil(response.data.totalHits / 12),
         }));
       } catch (error) {
         console.log(error);
@@ -64,14 +47,15 @@ export class App extends Component {
   changeValue = value => {
     this.setState({
       value,
+      page: 1,
+      images: [],
     });
   };
 
   showMore = () => {
-    let currentPage = this.state.page;
-    this.setState({
-      page: (currentPage += 1),
-    });
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   };
 
   handleClickGallery = (id, image) => {
@@ -87,6 +71,7 @@ export class App extends Component {
     this.setState({
       modal: {
         isOpen: false,
+        visibleData: null,
       },
     });
   };
@@ -113,8 +98,8 @@ export class App extends Component {
         {this.state.loading && (
           <MagnifyingGlass
             visible={true}
-            height="80"
-            width="80"
+            height="300"
+            width="300"
             ariaLabel="MagnifyingGlass-loading"
             wrapperStyle={{}}
             wrapperClass="MagnifyingGlass-wrapper"
@@ -123,14 +108,14 @@ export class App extends Component {
           />
         )}
         {this.state.images.length > 0 && (
-          <ImageGallery>
-            <ImageGalleryItem
-              images={this.state.images}
-              onClick={this.handleClickGallery}
-            />
-          </ImageGallery>
+          <ImageGallery
+            images={this.state.images}
+            onClick={this.handleClickGallery}
+          />
         )}
-        {this.state.images.length > 0 && <Button onClick={this.showMore} />}
+        {this.state.images.length > 0 && this.state.loadMore && (
+          <Button onClick={this.showMore} />
+        )}
       </div>
     );
   }

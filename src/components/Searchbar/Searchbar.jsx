@@ -20,6 +20,10 @@ export class Searchbar extends Component {
     event.preventDefault();
     const { value } = this.state;
 
+    if (value.trim() === '') {
+      return alert('Enter value');
+    }
+
     this.props.onSubmit(value, this.reset);
 
     this.reset();

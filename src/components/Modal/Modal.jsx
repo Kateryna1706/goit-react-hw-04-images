@@ -13,14 +13,12 @@ export class Modal extends Component {
 
   handleKeyDown = event => {
     if (event.code === 'Escape') {
-      console.log('KeyDown');
       this.props.onClick();
     }
   };
 
   handleBackdropClick = event => {
     if (event.currentTarget === event.target) {
-      console.log('Backdrop');
       this.props.onClick();
     }
   };

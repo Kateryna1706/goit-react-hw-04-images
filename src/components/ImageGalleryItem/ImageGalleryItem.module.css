@@ -1,4 +1,4 @@
-.ImageGallery {
+/* .ImageGallery {
   display: grid;
   max-width: calc(100vw - 48px);
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -27,4 +27,4 @@
 .imageGalleryItemImage:hover {
   transform: scale(1.03);
   cursor: zoom-in;
-}
+} */
