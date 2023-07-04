@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 
@@ -7,116 +7,110 @@ import { Button } from './Button/Button';
 import { Modal } from './Modal/Modal';
 import { MagnifyingGlass } from 'react-loader-spinner';
 
-export class App extends Component {
-  state = {
-    page: 1,
-    value: '',
-    images: [],
-    loading: false,
-    modal: { isOpen: false, visibleData: null },
-    error: null,
-  };
+export const App = () => {
+  const [page, setPage] = useState(1);
+  const [value, setValue] = useState('');
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState({ isOpen: false, visibleData: null });
+  const [error, setError] = useState(null);
+  const [loadMore, setLoadMore] = useState(false);
 
-  async componentDidUpdate(prevProps, prevState) {
-    if (
-      this.state.value !== prevState.value ||
-      this.state.page !== prevState.page
-    ) {
-      try {
-        this.setState({
-          loading: true,
-        });
-        const response = await fetchImages(this.state.value, this.state.page);
-        this.setState(prevState => ({
-          images: [...prevState.images, ...response.data.hits],
-          loadMore: this.state.page < Math.ceil(response.data.totalHits / 12),
-        }));
-      } catch (error) {
-        console.log(error);
-        this.setState({
-          error: error.message,
-        });
-      } finally {
-        this.setState({
-          loading: false,
-        });
-      }
+  // async componentDidUpdate(prevProps, prevState) {
+  //   if (
+  //     this.state.value !== prevState.value ||
+  //     this.state.page !== prevState.page
+  //   ) {
+  //     try {
+  //       this.setState({
+  //         loading: true,
+  //       });
+  //       const response = await fetchImages(this.state.value, this.state.page);
+  //       this.setState(prevState => ({
+  //         images: [...prevState.images, ...response.data.hits],
+  //         loadMore: this.state.page < Math.ceil(response.data.totalHits / 12),
+  //       }));
+  //     } catch (error) {
+  //       console.log(error);
+  //       this.setState({
+  //         error: error.message,
+  //       });
+  //     } finally {
+  //       this.setState({
+  //         loading: false,
+  //       });
+  //     }
+  //   }
+  // }
+
+  useEffect(() => {
+    if (value !== '') {
+      setLoading(true);
+      fetchImages(value, page)
+        .then(response => {
+          setImages(prevState => [...prevState, ...response.data.hits]);
+          setLoadMore(page < Math.ceil(response.data.totalHits / 12));
+        })
+        .catch(error => setError(error.message))
+        .finally(setLoading(false));
     }
-  }
+  }, [value, page]);
 
-  changeValue = value => {
-    this.setState({
-      value,
-      page: 1,
-      images: [],
+  const changeValue = value => {
+    setValue(value);
+    setPage(1);
+    setImages([]);
+  };
+
+  const showMore = () => {
+    setPage(prevState => prevState + 1);
+  };
+
+  const handleClickGallery = (id, image) => {
+    setModal({
+      isOpen: true,
+      visibleData: { id, image },
     });
   };
 
-  showMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
-  };
-
-  handleClickGallery = (id, image) => {
-    this.setState(state => ({
-      modal: {
-        isOpen: true,
-        visibleData: { id, image },
-      },
-    }));
-  };
-
-  closeModal = () => {
-    this.setState({
-      modal: {
-        isOpen: false,
-        visibleData: null,
-      },
+  const closeModal = () => {
+    setModal({
+      isOpen: false,
+      visibleData: null,
     });
   };
 
-  render() {
-    return (
-      <div
-        style={{
-          textAlign: 'center',
-          height: '100vh',
-          paddingBottom: 24,
-          padding: 20,
-          fontSize: 30,
-          color: '#010101',
-        }}
-      >
-        {this.state.modal.isOpen && (
-          <Modal
-            largeImage={this.state.modal.visibleData}
-            onClick={this.closeModal}
-          />
-        )}
-        <Searchbar onSubmit={this.changeValue} />
-        {this.state.loading && (
-          <MagnifyingGlass
-            visible={true}
-            height="300"
-            width="300"
-            ariaLabel="MagnifyingGlass-loading"
-            wrapperStyle={{}}
-            wrapperClass="MagnifyingGlass-wrapper"
-            glassColor="#c0efff"
-            color="#e15b64"
-          />
-        )}
-        {this.state.images.length > 0 && (
-          <ImageGallery
-            images={this.state.images}
-            onClick={this.handleClickGallery}
-          />
-        )}
-        {this.state.images.length > 0 && this.state.loadMore && (
-          <Button onClick={this.showMore} />
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      style={{
+        textAlign: 'center',
+        height: '100vh',
+        paddingBottom: 24,
+        padding: 20,
+        fontSize: 30,
+        color: '#010101',
+      }}
+    >
+      {modal.isOpen && (
+        <Modal largeImage={modal.visibleData} onClick={closeModal} />
+      )}
+      <Searchbar onSubmit={changeValue} />
+      {loading && (
+        <MagnifyingGlass
+          visible={true}
+          height="300"
+          width="300"
+          ariaLabel="MagnifyingGlass-loading"
+          wrapperStyle={{}}
+          wrapperClass="MagnifyingGlass-wrapper"
+          glassColor="#c0efff"
+          color="#e15b64"
+        />
+      )}
+      {images.length > 0 && (
+        <ImageGallery images={images} onClick={handleClickGallery} />
+      )}
+      {images.length > 0 && loadMore && <Button onClick={showMore} />}
+    </div>
+  );
+};
