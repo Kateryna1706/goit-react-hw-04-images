@@ -16,33 +16,6 @@ export const App = () => {
   const [error, setError] = useState(null);
   const [loadMore, setLoadMore] = useState(false);
 
-  // async componentDidUpdate(prevProps, prevState) {
-  //   if (
-  //     this.state.value !== prevState.value ||
-  //     this.state.page !== prevState.page
-  //   ) {
-  //     try {
-  //       this.setState({
-  //         loading: true,
-  //       });
-  //       const response = await fetchImages(this.state.value, this.state.page);
-  //       this.setState(prevState => ({
-  //         images: [...prevState.images, ...response.data.hits],
-  //         loadMore: this.state.page < Math.ceil(response.data.totalHits / 12),
-  //       }));
-  //     } catch (error) {
-  //       console.log(error);
-  //       this.setState({
-  //         error: error.message,
-  //       });
-  //     } finally {
-  //       this.setState({
-  //         loading: false,
-  //       });
-  //     }
-  //   }
-  // }
-
   useEffect(() => {
     if (value !== '') {
       setLoading(true);
