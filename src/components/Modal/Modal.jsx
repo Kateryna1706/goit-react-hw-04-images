@@ -3,12 +3,6 @@ import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 export const Modal = ({ largeImage, onClick }) => {
-  const handleKeyDown = event => {
-    if (event.code === 'Escape') {
-      onClick();
-    }
-  };
-
   const handleBackdropClick = event => {
     if (event.currentTarget === event.target) {
       onClick();
@@ -16,9 +10,14 @@ export const Modal = ({ largeImage, onClick }) => {
   };
 
   useEffect(() => {
+    const handleKeyDown = event => {
+      if (event.code === 'Escape') {
+        onClick();
+      }
+    };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  });
+  }, [onClick]);
 
   return (
     <div className={css.Overlay} onClick={handleBackdropClick}>
