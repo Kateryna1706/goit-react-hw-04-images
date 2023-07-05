@@ -3,6 +3,7 @@ import css from './Searchbar.module.css';
 import PropTypes from 'prop-types';
 import { IconButton } from '../IconButton/IconButton';
 import { ReactComponent as Search } from '../Icons/Icons.svg';
+import { Notify } from 'notiflix';
 
 export const Searchbar = ({ onSubmit }) => {
   const [value, setValue] = useState('');
@@ -16,7 +17,7 @@ export const Searchbar = ({ onSubmit }) => {
     event.preventDefault();
 
     if (value.trim() === '') {
-      return alert('Enter value');
+      return Notify.warning('Enter value!');
     }
 
     onSubmit(value);

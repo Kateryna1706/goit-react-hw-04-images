@@ -6,6 +6,7 @@ import { fetchImages } from './Services/api';
 import { Button } from './Button/Button';
 import { Modal } from './Modal/Modal';
 import { MagnifyingGlass } from 'react-loader-spinner';
+import { Notify } from 'notiflix';
 
 export const App = () => {
   const [page, setPage] = useState(1);
@@ -13,7 +14,6 @@ export const App = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({ isOpen: false, visibleData: null });
-  const [error, setError] = useState(null);
   const [loadMore, setLoadMore] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const App = () => {
           }
         })
         .catch(error => {
-          setError(error);
+          Notify.failure('No images found!');
         })
         .finally(setLoading(false));
     }
@@ -89,7 +89,6 @@ export const App = () => {
         <ImageGallery images={images} onClick={handleClickGallery} />
       )}
       {images.length > 0 && loadMore && <Button onClick={showMore} />}
-      {error && <h2>No images found!</h2>}
     </div>
   );
 };
