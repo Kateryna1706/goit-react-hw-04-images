@@ -23,8 +23,13 @@ export const App = () => {
         .then(response => {
           setImages(prevState => [...prevState, ...response.data.hits]);
           setLoadMore(page < Math.ceil(response.data.totalHits / 12));
+          if (response.data.hits.length === 0) {
+            throw new Error('No images found!');
+          }
         })
-        .catch(error => setError(error.message))
+        .catch(error => {
+          setError(error);
+        })
         .finally(setLoading(false));
     }
   }, [value, page]);
@@ -84,6 +89,7 @@ export const App = () => {
         <ImageGallery images={images} onClick={handleClickGallery} />
       )}
       {images.length > 0 && loadMore && <Button onClick={showMore} />}
+      {error && <h2>No images found!</h2>}
     </div>
   );
 };
